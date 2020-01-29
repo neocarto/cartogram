@@ -6,11 +6,11 @@
 \alias{cartogram_dorling.SpatialPolygonsDataFrame}
 \title{Calculate Non-Overlapping Circles Cartogram}
 \usage{
-cartogram_dorling(x, weight, k = 5, m_weight = 1, itermax = 1000)
+cartogram_dorling(x, weight, k = 5, l = NULL, m_weight = 1, itermax = 1000)
 
-\method{cartogram_dorling}{sf}(x, weight, k = 5, m_weight = 1, itermax = 1000)
+\method{cartogram_dorling}{sf}(x, weight, k = 5, l = NULL, m_weight = 1, itermax = 1000)
 
-\method{cartogram_dorling}{SpatialPolygonsDataFrame}(x, weight, k = 5, m_weight = 1, itermax = 1000)
+\method{cartogram_dorling}{SpatialPolygonsDataFrame}(x, weight, k = 5, l = NULL, m_weight = 1, itermax = 1000)
 }
 \arguments{
 \item{x}{SpatialPolygonsDataFrame, SpatialPointsDataFrame or an sf object}
@@ -18,6 +18,9 @@ cartogram_dorling(x, weight, k = 5, m_weight = 1, itermax = 1000)
 \item{weight}{Name of the weighting variable in x}
 
 \item{k}{Share of the bounding box of x filled by the larger circle}
+
+\item{l}{Multiplying factor (in map units) to adjust the size of the circles.
+Using l instead of k allows the cartograms to be made comparable with each other.}
 
 \item{m_weight}{Circles' movements weights. An optional vector of numeric weights 
 (0 to 1 inclusive) to 
@@ -37,37 +40,22 @@ Construct a cartogram which represents each geographic region
 as non-overlapping circles (Dorling 1996).
 }
 \examples{
-library(maptools)
-library(cartogram)
-library(rgdal)
-data(wrld_simpl)
-
-# Remove uninhabited regions
-afr <- spTransform(wrld_simpl[wrld_simpl$REGION==2 & wrld_simpl$POP2005 > 0,], 
-                   CRS("+init=epsg:3395"))
-
-# Create cartogram
-afr_carto <- cartogram_dorling(afr, "POP2005")
-
-# Plot 
-par(mfcol=c(1,2))
-plot(afr, main="original")
-
-plot(afr, main="distorted (sp)")
-plot(afr_carto, col = "red", add=TRUE)
-
-# Same with sf objects
 library(sf)
+library(rnaturalearth)
+library(cartogram)
 
-afr_sf = st_as_sf(afr)
+# Data inport and Handling
+world <- ne_countries(returnclass = "sf")
+crs <- "+proj=eqc +lat_ts=0 +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+world <- st_transform(world, crs = crs)
+world <- world[!is.na(world$pop_est),]
 
-afr_sf_carto <- cartogram_dorling(afr_sf, "POP2005")
+# Cartogram building
+pop.dorling <- cartogram_dorling(world, "pop_est")
+plot(st_geometry(pop.dorling), col ="red", border="white")
 
-# Plot 
-par(mfcol=c(1,3))
-plot(afr, main="original")
-plot(afr_carto, main="distorted (sp)")
-plot(st_geometry(afr_sf_carto), main="distorted (sf)")
+# Layout and Legend
+title("World Population")
 }
 \references{
 Dorling, D. (1996). Area Cartograms: Their Use and Creation. In Concepts and Techniques in Modern Geography (CATMOG), 59.
