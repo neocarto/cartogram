@@ -31,6 +31,8 @@ cartogram_dorling_legend(
 
 \item{border}{stroke color.}
 
+\item{lwd}{stroke thickness.}
+
 \item{values.cex}{size of the values in the legend.}
 
 \item{values.round}{rounding of numbers}

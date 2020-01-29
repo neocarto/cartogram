@@ -91,6 +91,7 @@ cartogram_dorling.SpatialPolygonsDataFrame <- function(x, weight, k = 5, l = NUL
 #' @param pos position of the legend. a vector of two coordinates in map units (c(x, y)
 #' @param col fill color.
 #' @param border stroke color.
+#' @param lwd stroke thickness.
 #' @param values.cex size of the values in the legend.
 #' @param values.round rounding of numbers
 #' @param lty line style
