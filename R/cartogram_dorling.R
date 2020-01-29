@@ -59,6 +59,7 @@ cartogram_dorling.sf <- function(x, weight, k = 5, l = NULL, m_weight = 1, iterm
   # comparable or not
   if(!is.null(l) == TRUE){
     dat.init$v <- dat.init$v * l
+    k <- NULL
   }
   if(!is.null(k) == TRUE){
     dat.init$v <- dat.init$v * (surf * k / 100) / max(dat.init$v)
